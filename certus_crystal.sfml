@@ -1,0 +1,22 @@
+every tick do
+    input fe:: from "cable" bottom side
+    output fe:: to "电力需求" bottom side
+    forget
+end
+every 20 ticks do
+    input 16 ae2:charged_* from "充能器"
+    output to "反应仓"
+    forget
+    input 16 from "粉碎机" right side
+    output to "反应仓"
+    forget
+    input ae2:certus_quartz_crystal from "缓存"
+    if "粉碎机" has <= 128 then
+        output 16 to "粉碎机" bottom side
+    end
+    if "充能器" has <= 128 then
+        output 16 to "充能器" bottom side
+    end
+    output to "输出"
+    forget
+end

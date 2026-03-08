@@ -1,0 +1,38 @@
+every 1 ticks do
+   input fe:: from "电力输入" each side
+   output fe:: to "电力需求" bottom side
+   forget
+end
+every 20 ticks do 
+    input with #ores from "输出"
+    output to "输入"
+    forget
+    input 576 with #ores from "输入"
+    output to "四倍" left side
+    output
+        with #ores/nickel,
+        with #ores/zinc
+    to "三倍" left side
+    output
+        mystical*:*,
+        with #ores/redstone,
+        with #ores/coal,
+        with #ores/diamond,
+        with #ores/lapis,
+        with #ores/emerald,
+        with #ores/fluorite,
+        with #ores/quartz,
+        with #ores/cinnabar,
+        with #ores/niter,
+        with #ores/sulfur
+    to "富集" bottom side
+    forget
+    input
+        mystical*:*,
+        minecraft:redstone,
+        minecraft:coal,
+        with #gems
+    from "富集" right side
+    output to "输出"
+    forget
+end

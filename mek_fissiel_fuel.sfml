@@ -1,0 +1,75 @@
+name "Mekanism Fissile Fuel"
+--标签:
+--  输入:
+--    从外部输入到网络: 能量输入, 水输入, 铀块输入, 氟石块输入, 硫粉输入
+--    从网络到机器: 能量需求
+--
+--  最终产品: 输出, 副产物
+--  中间产物: 氧气, 二氧化硫, 三氧化硫, 水蒸气, 硫酸, 氢氟酸, 铀黄饼, 氧化铀, 六氟化铀
+
+--流程: 
+--    硫粉输入 -> 二氧化硫 -> 三氧化硫 ->  硫酸  -> 氢氟酸 -> 六氟化铀 -> 裂变燃料 -> 输出
+-- 水输入 -> 氧气, 副产物 -^          |氟石块输入-^        |
+--                 水输入 -> 水蒸气 -^                   |
+--                           铀块输入 -> 铀黄饼 -> 氧化铀 -^       
+  
+every tick do 
+    input fe:: from "能量输入" front side
+    output fe:: to "能量需求" bottom side
+    forget
+end
+every 20 ticks do
+    input fluid:minecraft:water from "水输入" bottom side
+    output fluid:: to "氧气", "水蒸气" bottom side
+    forget
+
+
+    input with #forge:dusts/sulfur from "硫粉输入"
+    output retain 64 to each "二氧化硫" bottom side
+    forget
+    input gas:*:sulfur_dioxide from "二氧化硫" right side
+    output retain 5000 gas:: to each "三氧化硫" right side
+    forget
+    input gas:*:sulfur_trioxide from "三氧化硫" front side
+    output retain 5000 gas:: to each "硫酸" left side
+    forget
+    input gas:*:sulfuric_acid from "硫酸" front side
+    output retain 5000 gas:: to each "氢氟酸" bottom side
+    forget
+    input gas:*:hydrofluoric_acid from "氢氟酸" right side
+    output retain 5000 gas:: to each "六氟化铀" left side
+    forget
+    input gas:*:uranium_hexafluoride from "六氟化铀" front side
+    output retain 5000 gas:: to each "裂变燃料" bottom side
+    forget
+
+
+    input gas:*:oxygen from "氧气" right side
+    output retain 5000 gas:: to each "三氧化硫" left side
+    forget
+    input mekanism:block_fluorite from "氟石块输入" bottom side
+    output retain 64 to each "氢氟酸" front side
+    forget
+    input gas:*:water_vapor from "水蒸气" left side
+    output retain 5000 gas:: to each "硫酸" right side
+    forget
+
+
+    input with #forge:storage_blocks/uranium from "铀块输入" bottom side
+    output retain 64 to each "铀黄饼" bottom side
+    forget
+    input mekanism:yellow_cake_uranium from "铀黄饼" right side
+    output retain 64 to each "氧化铀" bottom side
+    forget
+    input gas:*:uranium_oxide from "氧化铀" right side
+    output retain 5000 gas:: to each "六氟化铀" right side
+    forget
+
+
+    input gas:*:fissile_fuel from "裂变燃料" front side
+    output gas::, item::, fluid:: to "输出" bottom side
+    forget
+    input gas:*:hydrogen from "氧气" left side
+    output gas::, item::, fluid:: to "副产物" bottom side
+    forget
+end
